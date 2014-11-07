@@ -2,16 +2,22 @@ package com.nanuvem.lom.kernel;
 
 import java.util.List;
 
+import com.nanuvem.lom.api.Attribute;
 import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.Facade;
 import com.nanuvem.lom.api.dao.DaoFactory;
+import com.nanuvem.lom.kernel.deployer.Deployers;
 
 public class KernelFacade implements Facade {
 
 	private EntityServiceImpl entityService;
+	private AttributeServiceImpl attributeService;
 
 	public KernelFacade(DaoFactory daoFactory) {
 		entityService = new EntityServiceImpl(daoFactory);
+		Deployers deployers = new Deployers();
+		attributeService = new AttributeServiceImpl(daoFactory, entityService,
+				deployers);
 	}
 	
 	public EntityServiceImpl getEntityService() {
@@ -44,6 +50,23 @@ public class KernelFacade implements Facade {
 
 	public void deleteEntity(Long id) {
 		entityService.delete(id);
+	}
+
+	public Attribute create(Attribute attribute) {
+		return attributeService.create(attribute);
+	}
+
+	public Attribute findAttributeById(Long id) {
+		return attributeService.findAttributeById(id);
+	}
+
+	public Attribute findAttributeByNameAndEntityFullName(String name,
+			String fullEntityName) {
+		return attributeService.findAttributeByNameAndEntityFullName(name, fullEntityName);
+	}
+
+	public Attribute update(Attribute attribute) {
+		return attributeService.update(attribute);
 	}
 
 }

@@ -6,9 +6,12 @@ import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
 public class KernelEntityServiceTest extends EntityServiceTest {
 
+	private MemoryDaoFactory daoFactory;
+
 	@Override
 	public Facade createFacade() {
-		return new KernelFacade(new MemoryDaoFactory());
+		daoFactory = new MemoryDaoFactory();
+		return new KernelFacade(daoFactory);
 	}
 
 }
