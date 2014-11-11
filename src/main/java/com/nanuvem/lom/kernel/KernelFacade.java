@@ -5,25 +5,29 @@ import java.util.List;
 import com.nanuvem.lom.api.Attribute;
 import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.Facade;
+import com.nanuvem.lom.api.Instance;
 import com.nanuvem.lom.api.dao.DaoFactory;
-import com.nanuvem.lom.kernel.deployer.Deployers;
+import com.nanuvem.lom.kernel.validator.definition.AttributeTypeDefinitionManager;
 
 public class KernelFacade implements Facade {
 
 	private EntityServiceImpl entityService;
 	private AttributeServiceImpl attributeService;
+	private InstanceServiceImpl instanceService;
 
 	public KernelFacade(DaoFactory daoFactory) {
 		entityService = new EntityServiceImpl(daoFactory);
-		Deployers deployers = new Deployers();
+		AttributeTypeDefinitionManager deployers = new AttributeTypeDefinitionManager();
 		attributeService = new AttributeServiceImpl(daoFactory, entityService,
 				deployers);
+		instanceService = new InstanceServiceImpl(daoFactory, entityService,
+				attributeService, deployers);
 	}
-	
+
 	public EntityServiceImpl getEntityService() {
 		return this.entityService;
 	}
-	
+
 	public Entity create(Entity entity) {
 		return entityService.create(entity);
 	}
@@ -62,11 +66,20 @@ public class KernelFacade implements Facade {
 
 	public Attribute findAttributeByNameAndEntityFullName(String name,
 			String fullEntityName) {
-		return attributeService.findAttributeByNameAndEntityFullName(name, fullEntityName);
+		return attributeService.findAttributeByNameAndEntityFullName(name,
+				fullEntityName);
 	}
 
 	public Attribute update(Attribute attribute) {
 		return attributeService.update(attribute);
+	}
+
+	public Instance create(Instance instance) {
+		return instanceService.create(instance);
+	}
+
+	public Instance findInstanceById(Long id) {
+		return instanceService.findInstanceById(id);
 	}
 
 }

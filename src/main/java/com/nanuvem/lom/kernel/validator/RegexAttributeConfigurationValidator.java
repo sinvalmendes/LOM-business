@@ -1,22 +1,26 @@
 package com.nanuvem.lom.kernel.validator;
 
-import static com.nanuvem.lom.kernel.validator.AttributeTypeConfigurationValidator.addError;
-
 import java.util.List;
 
-public class RegexAttributeConfigurationValidator implements ValueValidator<String> {
+import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
+import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 
+public class RegexAttributeConfigurationValidator implements
+		ValueValidator<String> {
 
-	public void validate(List<ValidationError> errors,
-			String value, String regexValue) {
+	public void validate(List<ValidationError> errors, String attribute,
+			String value, String regexValue, boolean defaultValue) {
 
 		if (!value.matches(regexValue)) {
-			addError(errors,
-					"the default value does not match regex configuration");
+			String message = (defaultValue) ? "the default value does not match regex configuration"
+					: "The value for the '"
+							+ attribute
+							+ "' attribute does not meet the defined regular expression";
+			ValidationError.addError(errors, message);
 		}
 	}
 
-	public AttributeConfigurationValidator createFieldValidator(String field) {
-		return new StringAttributeConfigurationValidator(field);
+	public AttributeValidator createFieldValidator(String field) {
+		return new ConfigurationFieldValidator(field, String.class);
 	}
 }

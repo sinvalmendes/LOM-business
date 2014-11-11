@@ -1,24 +1,30 @@
 package com.nanuvem.lom.kernel.validator;
 
-import static com.nanuvem.lom.kernel.validator.AttributeTypeConfigurationValidator.addError;
-
 import java.util.List;
 
-public class MinimumValueAttributeConfigurationValidator implements ValueValidator<Integer> {
+import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
+import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 
-	public void validate(List<ValidationError> errors,
-			String value, Integer minValue) {
+public class MinimumValueAttributeConfigurationValidator implements
+		ValueValidator<Integer> {
 
-		Integer intDefaultValue = Integer.parseInt(value);
-		if (intDefaultValue < minValue) {
+	public void validate(List<ValidationError> errors, String attribute,
+			String value, Integer minValue, boolean defaultValue) {
 
-			addError(errors, "the default value is smaller than minvalue");
+		if (value == null || Integer.parseInt(value) < minValue) {
+
+			String message = (defaultValue) ? "the default value is smaller than minvalue"
+					: "The value for '"
+							+ attribute
+							+ "' must be greater or equal to "
+							+ minValue;
+			ValidationError.addError(errors, message);
 		}
 
 	}
 
-	public AttributeConfigurationValidator createFieldValidator(String field) {
-		return new IntegerAttributeConfigurationValidator(field);
+	public AttributeValidator createFieldValidator(String field) {
+		return new ConfigurationFieldValidator(field, Integer.class);
 	}
 
 }

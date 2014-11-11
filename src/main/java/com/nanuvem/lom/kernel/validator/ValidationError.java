@@ -1,5 +1,7 @@
 package com.nanuvem.lom.kernel.validator;
 
+import java.util.List;
+
 public class ValidationError {
 
 	private String message;
@@ -11,4 +13,10 @@ public class ValidationError {
 	public String getMessage() {
 		return message;
 	}
+
+	public static void addError(List<ValidationError> errors, String message) {
+		ValidationError validationError = new ValidationError(message);
+		errors.add(validationError);
+	}
+	
 }

@@ -1,22 +1,28 @@
 package com.nanuvem.lom.kernel.validator;
 
-import static com.nanuvem.lom.kernel.validator.AttributeTypeConfigurationValidator.addError;
-
 import java.util.List;
 
-public class MinimumLengthAttributeConfigurationValidator implements ValueValidator<Integer> {
+import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
+import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 
-	
-	public void validate(List<ValidationError> errors,
-			String value, Integer minLength) {
+public class MinimumLengthAttributeConfigurationValidator implements
+		ValueValidator<Integer> {
+
+	public void validate(List<ValidationError> errors, String attribute,
+			String value, Integer minLength, boolean defaultValue) {
+		
 		if (value.length() < minLength) {
 
-			addError(errors, "the default value is smaller than minlength");
+			String message = (defaultValue) ? "the default value is smaller than minlength"
+					: "The value for '" + attribute
+							+ "' must have a minimum length of " + minLength
+							+ " characters";
+			ValidationError.addError(errors, message);
 		}
 	}
 
-	public AttributeConfigurationValidator createFieldValidator(String field) {
-		return new IntegerAttributeConfigurationValidator(field);
+	public AttributeValidator createFieldValidator(String field) {
+		return new ConfigurationFieldValidator(field, Integer.class);
 	}
 
 }

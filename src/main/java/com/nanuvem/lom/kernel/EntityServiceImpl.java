@@ -15,12 +15,13 @@ public class EntityServiceImpl {
 	public static final String DEFAULT_NAMESPACE = "default";
 
 	EntityServiceImpl(DaoFactory factory) {
-		this.dao = factory.createEntityDao();
+		this.dao = new EntityDaoDecorator(factory.createEntityDao());
 	}
 
 	public Entity create(Entity entity) {
 		validateEntity(entity);
-		return dao.create(entity);
+		Entity createdEntity = dao.create(entity);
+		return createdEntity;
 	}
 
 	private void validateEntity(Entity entity) {
@@ -28,18 +29,20 @@ public class EntityServiceImpl {
 			throw new MetadataException("The name of an Entity is mandatory");
 		}
 
-		if (entity.getNamespace() == null || entity.getNamespace().equals("")) {
-			entity.setNamespace(DEFAULT_NAMESPACE);
+		if (entity.getNamespace() == null) {
+			entity.setNamespace("");
 		}
-
+		
 		validadeNameAndNamespacePattern(entity);
 		validadeEntityDuplication(entity);
 	}
 
 	private void validadeNameAndNamespacePattern(Entity entity) {
-		if (!Pattern.matches("[a-zA-Z1-9.]{1,}", entity.getNamespace())) {
+		String namespace = entity.getNamespace();
+		
+		if (!namespace.equals("") && !Pattern.matches("[a-zA-Z1-9.]{1,}", namespace)) {
 			throw new MetadataException("Invalid value for Entity namespace: "
-					+ entity.getNamespace());
+					+ namespace);
 		}
 
 		if (!Pattern.matches("[a-zA-Z1-9]{1,}", entity.getName())) {
@@ -49,23 +52,17 @@ public class EntityServiceImpl {
 	}
 
 	private void validadeEntityDuplication(Entity entity) {
-		String readEntityQuery = entity.getNamespace() + "." + entity.getName();
 		Entity found = null;
 		try {
-			found = findByFullName(readEntityQuery);
+			found = findByFullName(entity.getFullName());
 		} catch (MetadataException me) {
 			found = null;
 		}
 
-		if (found != null && found.getName().equals(entity.getName())
-				&& found.getNamespace().equals(entity.getNamespace())) {
+		if (found != null && !found.getId().equals(entity.getId())) {
 			StringBuilder message = new StringBuilder();
 			message.append("The ");
-			if (!entity.getNamespace().equals(DEFAULT_NAMESPACE)) {
-				message.append(entity.getNamespace());
-				message.append(".");
-			}
-			message.append(entity.getName());
+			message.append(found.getFullName());
 			message.append(" Entity already exists");
 			throw new MetadataException(message.toString());
 		}
@@ -83,7 +80,7 @@ public class EntityServiceImpl {
 			name = classFullName.substring(classFullName.lastIndexOf(".") + 1,
 					classFullName.length());
 		} else {
-			namespace = DEFAULT_NAMESPACE;
+			namespace = "";
 			name = classFullName;
 		}
 
@@ -97,11 +94,10 @@ public class EntityServiceImpl {
 		}
 
 		if (namespace.isEmpty()) {
-			namespace = DEFAULT_NAMESPACE;
+			namespace = "";
 		}
 
-		Entity classByNamespaceAndName = dao.findByFullName(namespace + "."
-				+ name);
+		Entity classByNamespaceAndName = dao.findByFullName(classFullName);
 
 		if (classByNamespaceAndName == null) {
 			if (classFullName.startsWith(".")) {
@@ -113,15 +109,18 @@ public class EntityServiceImpl {
 			}
 			throw new MetadataException("Entity not found: " + classFullName);
 		}
+		
 		return classByNamespaceAndName;
 	}
 
 	public Entity findById(Long id) {
-		return this.dao.findById(id);
+		Entity entity = this.dao.findById(id);
+		return entity;
 	}
 
 	public List<Entity> listAll() {
-		return dao.listAll();
+		List<Entity> list = dao.listAll();
+		return list;
 	}
 
 	public List<Entity> listByFullName(String fragment) {
@@ -135,7 +134,8 @@ public class EntityServiceImpl {
 					+ fragment);
 		}
 
-		return this.dao.listByFullName(fragment);
+		List<Entity> list = this.dao.listByFullName(fragment);
+		return list;
 	}
 
 	private void formatStringAndThrowsExceptionInvalidKeyForEntity(String value) {
@@ -149,10 +149,11 @@ public class EntityServiceImpl {
 
 	}
 
-	public Entity update(Entity updateEntity) {
-		this.validateEntityOnUpdate(updateEntity);
-		this.validateEntity(updateEntity);
-		return this.dao.update(updateEntity);
+	public Entity update(Entity entity) {
+		this.validateEntityOnUpdate(entity);
+		this.validateEntity(entity);
+		Entity updatedEntity = this.dao.update(entity);
+		return updatedEntity;
 	}
 
 	private void validateEntityOnUpdate(Entity updateEntity) {
@@ -172,4 +173,68 @@ public class EntityServiceImpl {
 		this.dao.delete(id);
 	}
 
+}
+
+class EntityDaoDecorator implements EntityDao {
+	
+	private EntityDao entityDao;
+
+	public EntityDaoDecorator(EntityDao entityDao) {
+		this.entityDao = entityDao;
+	}
+	
+
+	public Entity create(Entity entity) {
+		Entity entityClone = Util.clone(entity);
+		Util.setDefaultNamespace(entityClone);
+		
+		Entity createdEntity = entityDao.create(entityClone);
+		
+		Entity createdEntityClone = Util.clone(createdEntity);
+		Util.removeDefaultNamespace(createdEntityClone);
+		return createdEntityClone;
+	}
+
+	public List<Entity> listAll() {
+		List<Entity> list = Util.clone(entityDao.listAll());
+		Util.removeDefaultNamespace(list);
+		return list;
+	}
+
+	public Entity findById(Long id) {
+		Entity entity = Util.clone(entityDao.findById(id));
+		Util.removeDefaultNamespace(entity);
+		return entity;
+	}
+
+	public List<Entity> listByFullName(String fragment) {
+		List<Entity> list = Util.clone(entityDao.listByFullName(fragment));
+		Util.removeDefaultNamespace(list);
+		return list;
+	}
+
+	public Entity findByFullName(String fullName) {
+		fullName = Util.setDefaultNamespace(fullName);
+		
+		Entity entity = Util.clone(entityDao.findByFullName(fullName));
+		Util.removeDefaultNamespace(entity);
+		return entity;
+	}
+
+
+	public Entity update(Entity entity) {
+		Entity entityClone = Util.clone(entity);
+		Util.setDefaultNamespace(entityClone);
+		
+		Entity updatedEntity = entityDao.update(entityClone);
+		
+		Entity updatedEntityClone = Util.clone(updatedEntity);
+		Util.removeDefaultNamespace(updatedEntityClone);
+		return updatedEntityClone;
+	}
+
+	public void delete(Long id) {
+		entityDao.delete(id);
+	}
+	
 }

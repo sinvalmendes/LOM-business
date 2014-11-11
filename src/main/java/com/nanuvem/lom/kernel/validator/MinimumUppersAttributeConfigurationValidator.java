@@ -1,33 +1,36 @@
 package com.nanuvem.lom.kernel.validator;
 
-import static com.nanuvem.lom.kernel.validator.AttributeTypeConfigurationValidator.addError;
-
 import java.util.List;
 
-public class MinimumUppersAttributeConfigurationValidator implements ValueValidator<Integer> {
+import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
+import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 
-	public void validate(List<ValidationError> errors,
-			String value, Integer minUppers) {
+public class MinimumUppersAttributeConfigurationValidator implements
+		ValueValidator<Integer> {
+
+	public void validate(List<ValidationError> errors, String attribute,
+			String value, Integer minUppers, boolean defaultValue) {
 
 		int uppercaseCharacterCounter = 0;
 		for (int i = 0; i < value.length(); i++) {
-			if (value.toCharArray()[i] == Character
-					.toUpperCase(value.toCharArray()[i])) {
+			if (Character.isUpperCase(value.toCharArray()[i])) {
 				uppercaseCharacterCounter++;
 			}
 		}
 		if (uppercaseCharacterCounter < minUppers) {
-			String messagePlural = minUppers > 1 ? "s"
-					: "";
+			String messagePlural = minUppers > 1 ? "s" : "";
 
-			addError(errors, "the default value must have at least "
-					+ minUppers
-					+ " upper case character" + messagePlural);
+			String message = (defaultValue) ? 
+					"the default value must have at least "
+					+ minUppers + " upper case character" + messagePlural : 
+					"The value for '" + attribute + "' must have at least "
+					+ minUppers + " uppercase character" + messagePlural;
+			ValidationError.addError(errors, message);
 		}
 	}
 
-	public AttributeConfigurationValidator createFieldValidator(String field) {
-		return new IntegerAttributeConfigurationValidator(field);
+	public AttributeValidator createFieldValidator(String field) {
+		return new ConfigurationFieldValidator(field, Integer.class);
 	}
 
 }

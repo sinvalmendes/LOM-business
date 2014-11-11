@@ -13,29 +13,27 @@ import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.MetadataException;
 import com.nanuvem.lom.api.dao.AttributeDao;
 import com.nanuvem.lom.api.dao.DaoFactory;
-import com.nanuvem.lom.kernel.deployer.AttributeTypeDeployer;
-import com.nanuvem.lom.kernel.deployer.Deployers;
-import com.nanuvem.lom.kernel.util.JsonNodeUtil;
-import com.nanuvem.lom.kernel.validator.AttributeConfigurationValidator;
+import com.nanuvem.lom.api.util.JsonNodeUtil;
 import com.nanuvem.lom.kernel.validator.ValidationError;
+import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
+import com.nanuvem.lom.kernel.validator.definition.AttributeTypeDefinition;
+import com.nanuvem.lom.kernel.validator.definition.AttributeTypeDefinitionManager;
 
 public class AttributeServiceImpl {
-
-	private AttributeDao attributeDao;
-
-	private EntityServiceImpl entityService;
 
 	private final Integer MINIMUM_ATTRIBUTE_SEQUENCE = 1;
 
 	private final String PREFIX_EXCEPTION_MESSAGE_CONFIGURATION = "Invalid configuration for attribute";
 
-	private Deployers deployers;
+	private AttributeDao attributeDao;
+	private EntityServiceImpl entityService;
+	private AttributeTypeDefinitionManager definitionManager;
 
 	AttributeServiceImpl(DaoFactory dao, EntityServiceImpl entityService,
-			Deployers deployers) {
+			AttributeTypeDefinitionManager definitionManager) {
 		this.entityService = entityService;
-		this.deployers = deployers;
-		this.attributeDao = dao.createAttributeDao();
+		this.definitionManager = definitionManager;
+		this.attributeDao = new AttributeDaoDecorator(dao.createAttributeDao());
 
 	}
 
@@ -98,18 +96,21 @@ public class AttributeServiceImpl {
 			JsonNode jsonNode = JsonNodeUtil.validate(configuration,
 					"Invalid value for Attribute configuration: "
 							+ configuration);
-			validateFieldNames(attribute, jsonNode);
-			validateFieldValues(attribute, jsonNode);
+
+			AttributeTypeDefinition definition = definitionManager
+					.get(attribute.getType().name());
+			validateFieldNames(definition, attribute, jsonNode);
+			validateFieldValues(definition, attribute, jsonNode);
 		}
 	}
 
-	private void validateFieldNames(Attribute attribute, JsonNode jsonNode) {
+	private void validateFieldNames(AttributeTypeDefinition definition,
+			Attribute attribute, JsonNode jsonNode) {
+
 		Iterator<String> fieldNames = jsonNode.getFieldNames();
 		while (fieldNames.hasNext()) {
 			String fieldName = fieldNames.next();
-			if (!this.deployers.get(attribute.getType().name())
-					.containsConfigurationField(fieldName)) {
-
+			if (!definition.containsConfigurationField(fieldName)) {
 				throw new MetadataException(
 						"Invalid configuration for attribute "
 								+ attribute.getName() + ": the " + fieldName
@@ -118,28 +119,18 @@ public class AttributeServiceImpl {
 		}
 	}
 
-	private void validateFieldValues(Attribute attribute, JsonNode jsonNode) {
+	private void validateFieldValues(AttributeTypeDefinition definition,
+			Attribute attribute, JsonNode jsonNode) {
 		List<ValidationError> errors = new ArrayList<ValidationError>();
-		AttributeTypeDeployer deployer = this.deployers.get(attribute.getType()
-				.name());
-		for (AttributeConfigurationValidator validator : deployer
-				.getValidators()) {
-			validator.validate(errors, jsonNode);
+
+		for (AttributeValidator validator : definition.getValidators()) {
+			validator.validateDefault(errors, jsonNode);
 		}
 
-		if (!errors.isEmpty()) {
-			String errorMessage = "";
-			for (ValidationError error : errors) {
-				if (errorMessage.isEmpty()) {
-					errorMessage += PREFIX_EXCEPTION_MESSAGE_CONFIGURATION
-							+ " " + attribute.getName() + ": "
-							+ error.getMessage();
-				} else {
-					errorMessage += ", " + error.getMessage();
-				}
-			}
-			throw new MetadataException(errorMessage);
-		}
+		Util.throwValidationErrors(
+				errors,
+				PREFIX_EXCEPTION_MESSAGE_CONFIGURATION + " "
+						+ attribute.getName() + ": ");
 	}
 
 	private Entity validateExistingEntityForAttribute(Attribute attribute) {
@@ -191,7 +182,9 @@ public class AttributeServiceImpl {
 		Entity entity = validateExistingEntityForAttribute(attribute);
 		attribute.setEntity(entity);
 		this.validateCreate(attribute);
-		return this.attributeDao.create(attribute);
+		Attribute createdAttribute = this.attributeDao.create(attribute);
+		entityService.update(createdAttribute.getEntity());
+		return createdAttribute;
 	}
 
 	public List<Attribute> listAllAttributes(String entityFullName) {
@@ -201,7 +194,8 @@ public class AttributeServiceImpl {
 
 	public Attribute findAttributeById(Long id) {
 		if (id != null) {
-			return this.attributeDao.findAttributeById(id);
+			Attribute attribute = this.attributeDao.findAttributeById(id);
+			return attribute;
 		} else {
 			return null;
 		}
@@ -212,12 +206,11 @@ public class AttributeServiceImpl {
 
 		if ((nameAttribute != null && !nameAttribute.isEmpty())
 				&& (entityFullName != null && !entityFullName.isEmpty())) {
-			if (!entityFullName.contains(".")) {
-				entityFullName = EntityServiceImpl.DEFAULT_NAMESPACE + "."
-						+ entityFullName;
-			}
-			return this.attributeDao.findAttributeByNameAndEntityFullName(
-					nameAttribute, entityFullName);
+
+			Attribute attribute = this.attributeDao
+					.findAttributeByNameAndEntityFullName(nameAttribute,
+							entityFullName);
+			return attribute;
 		}
 		return null;
 	}
@@ -229,7 +222,9 @@ public class AttributeServiceImpl {
 		this.validateExistingAttributeNotInEntityOnUpdate(attribute);
 		this.validateAttributeConfiguration(attribute);
 
-		return this.attributeDao.update(attribute);
+		Attribute updatedAttribute = this.attributeDao.update(attribute);
+		entityService.update(updatedAttribute.getEntity());
+		return updatedAttribute;
 	}
 
 	private void validateUpdateType(Attribute attribute) {
@@ -258,4 +253,44 @@ public class AttributeServiceImpl {
 		throw new MetadataException("Invalid value for Attribute sequence: "
 				+ attribute.getSequence());
 	}
+}
+
+class AttributeDaoDecorator implements AttributeDao {
+
+	private AttributeDao attributeDao;
+
+	public AttributeDaoDecorator(AttributeDao attributeDao) {
+		this.attributeDao = attributeDao;
+	}
+
+	public Attribute create(Attribute attribute) {
+		Attribute createdAttribute = Util.clone(attributeDao.create(Util
+				.clone(attribute)));
+		Util.removeDefaultNamespace(createdAttribute);
+		return createdAttribute;
+	}
+
+	public Attribute findAttributeById(Long id) {
+		Attribute attribute = Util.clone(attributeDao.findAttributeById(id));
+		Util.removeDefaultNamespace(attribute);
+		return Util.clone(attribute);
+	}
+
+	public Attribute findAttributeByNameAndEntityFullName(String nameAttribute,
+			String entityFullName) {
+		entityFullName = Util.setDefaultNamespace(entityFullName);
+		Attribute attribute = Util.clone(attributeDao
+				.findAttributeByNameAndEntityFullName(nameAttribute,
+						entityFullName));
+		Util.removeDefaultNamespace(attribute);
+		return Util.clone(attribute);
+	}
+
+	public Attribute update(Attribute attribute) {
+		Attribute updatedAttribute = Util.clone(attributeDao.update(Util
+				.clone(attribute)));
+		Util.removeDefaultNamespace(updatedAttribute);
+		return Util.clone(updatedAttribute);
+	}
+
 }
