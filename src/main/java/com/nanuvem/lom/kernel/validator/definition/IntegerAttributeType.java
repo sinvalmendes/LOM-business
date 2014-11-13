@@ -6,7 +6,6 @@ import java.util.List;
 import com.nanuvem.lom.api.Attribute;
 import com.nanuvem.lom.kernel.validator.MaximumValueAttributeConfigurationValidator;
 import com.nanuvem.lom.kernel.validator.MinimumValueAttributeConfigurationValidator;
-import com.nanuvem.lom.kernel.validator.configuration.AttributeTypeValidator;
 import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
 import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 import com.nanuvem.lom.kernel.validator.configuration.AttributeValidatorWithValue;
@@ -19,7 +18,6 @@ public class IntegerAttributeType implements AttributeTypeDefinition {
 		List<AttributeValidator> validators = new ArrayList<AttributeValidator>();
 
 		validators.add(new MandatoryValidator());
-		validators.add(new AttributeTypeValidator(Integer.class));
 		
 		validators.add(new ConfigurationFieldValidator(
 				Attribute.DEFAULT_CONFIGURATION_NAME, Integer.class));

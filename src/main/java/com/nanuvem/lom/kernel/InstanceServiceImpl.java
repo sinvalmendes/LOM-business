@@ -6,7 +6,6 @@ import java.util.List;
 import org.codehaus.jackson.JsonNode;
 
 import com.nanuvem.lom.api.Attribute;
-import com.nanuvem.lom.api.AttributeType;
 import com.nanuvem.lom.api.AttributeValue;
 import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.Instance;
@@ -16,6 +15,7 @@ import com.nanuvem.lom.api.dao.DaoFactory;
 import com.nanuvem.lom.api.dao.InstanceDao;
 import com.nanuvem.lom.api.util.JsonNodeUtil;
 import com.nanuvem.lom.kernel.validator.ValidationError;
+import com.nanuvem.lom.kernel.validator.configuration.AttributeTypeValidator;
 import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
 import com.nanuvem.lom.kernel.validator.definition.AttributeTypeDefinition;
 import com.nanuvem.lom.kernel.validator.definition.AttributeTypeDefinitionManager;
@@ -45,13 +45,13 @@ public class InstanceServiceImpl {
 	public Instance create(Instance instance) {
 		if (instance.getEntity() == null) {
 			throw new MetadataException(
-					"Invalid value for Instance class: The class is mandatory");
+					"Invalid value for Instance entity: The entity is mandatory");
 		}
 		Entity entity;
 		try {
 			entity = this.entityService.findById(instance.getEntity().getId());
 		} catch (MetadataException e) {
-			throw new MetadataException("Unknown class id: "
+			throw new MetadataException("Unknown entity id: "
 					+ instance.getEntity().getId());
 		}
 
@@ -79,15 +79,19 @@ public class InstanceServiceImpl {
 	}
 
 	private void validateValue(String configuration, AttributeValue value) {
-
-		JsonNode jsonNode = load(configuration);
 		List<ValidationError> errors = new ArrayList<ValidationError>();
 
 		AttributeTypeDefinition definition = definitionManager.get(value
 				.getAttribute().getType().name());
+		AttributeTypeValidator typeValidator = new AttributeTypeValidator(definition.getAttributeClass());
+		typeValidator.validateValue(errors, null, value);
 
-		for (AttributeValidator validator : definition.getValidators()) {
-			validator.validateValue(errors, jsonNode, value);
+		if (configuration != null && !configuration.isEmpty()) {
+			JsonNode jsonNode = load(configuration);
+			
+			for (AttributeValidator validator : definition.getValidators()) {
+				validator.validateValue(errors, jsonNode, value);
+			}
 		}
 
 		Util.throwValidationErrors(errors, PREFIX_EXCEPTION_MESSAGE_VALUE);

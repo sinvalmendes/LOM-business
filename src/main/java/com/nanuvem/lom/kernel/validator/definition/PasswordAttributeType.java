@@ -10,10 +10,9 @@ import com.nanuvem.lom.kernel.validator.MinimumLengthAttributeConfigurationValid
 import com.nanuvem.lom.kernel.validator.MinimumNumbersAttributeConfigurationValidator;
 import com.nanuvem.lom.kernel.validator.MinimumSymbolsAttributeConfigurationValidator;
 import com.nanuvem.lom.kernel.validator.MinimumUppersAttributeConfigurationValidator;
-import com.nanuvem.lom.kernel.validator.configuration.AttributeTypeValidator;
-import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
 import com.nanuvem.lom.kernel.validator.configuration.AttributeValidatorWithValue;
+import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 import com.nanuvem.lom.kernel.validator.configuration.MandatoryValidator;
 import com.nanuvem.lom.kernel.validator.configuration.MinAndMaxValidator;
 
@@ -23,7 +22,6 @@ public class PasswordAttributeType implements AttributeTypeDefinition {
 		List<AttributeValidator> validators = new ArrayList<AttributeValidator>();
 
 		validators.add(new MandatoryValidator());
-		validators.add(new AttributeTypeValidator(String.class));
 
 		validators.add(new ConfigurationFieldValidator(
 				Attribute.DEFAULT_CONFIGURATION_NAME, String.class));

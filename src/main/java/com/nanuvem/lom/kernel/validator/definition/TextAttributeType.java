@@ -7,10 +7,9 @@ import com.nanuvem.lom.api.Attribute;
 import com.nanuvem.lom.kernel.validator.MaximumLengthAttributeConfigurationValidator;
 import com.nanuvem.lom.kernel.validator.MinimumLengthAttributeConfigurationValidator;
 import com.nanuvem.lom.kernel.validator.RegexAttributeConfigurationValidator;
-import com.nanuvem.lom.kernel.validator.configuration.AttributeTypeValidator;
 import com.nanuvem.lom.kernel.validator.configuration.AttributeValidator;
-import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 import com.nanuvem.lom.kernel.validator.configuration.AttributeValidatorWithValue;
+import com.nanuvem.lom.kernel.validator.configuration.ConfigurationFieldValidator;
 import com.nanuvem.lom.kernel.validator.configuration.MandatoryValidator;
 import com.nanuvem.lom.kernel.validator.configuration.MinAndMaxValidator;
 
@@ -19,7 +18,6 @@ public class TextAttributeType implements AttributeTypeDefinition {
 	public List<AttributeValidator> getValidators() {
 		List<AttributeValidator> validators = new ArrayList<AttributeValidator>();
 		validators.add(new MandatoryValidator());
-		validators.add(new AttributeTypeValidator(String.class));
 
 		validators.add(new AttributeValidatorWithValue<String>(
 				Attribute.REGEX_CONFIGURATION_NAME,
