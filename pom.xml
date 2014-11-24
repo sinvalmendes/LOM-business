@@ -4,7 +4,7 @@
 
 	<groupId>com.nanuvem.lom</groupId>
 	<artifactId>kernel</artifactId>
-	<version>0.0.6</version>
+	<version>0.0.7</version>
 	<packaging>jar</packaging>
 
 	<name>kernel</name>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>com.nanuvem.lom</groupId>
 			<artifactId>api</artifactId>
-			<version>0.0.6</version>
+			<version>0.0.7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.nanuvem.lom.dao</groupId>

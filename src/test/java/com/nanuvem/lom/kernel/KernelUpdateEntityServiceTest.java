@@ -1,10 +1,10 @@
 package com.nanuvem.lom.kernel;
 
 import com.nanuvem.lom.api.Facade;
-import com.nanuvem.lom.api.tests.EntityServiceTest;
+import com.nanuvem.lom.api.tests.UpdateEntityServiceTest;
 import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
-public class KernelEntityServiceTest extends EntityServiceTest {
+public class KernelUpdateEntityServiceTest extends UpdateEntityServiceTest {
 
 	private MemoryDaoFactory daoFactory;
 
