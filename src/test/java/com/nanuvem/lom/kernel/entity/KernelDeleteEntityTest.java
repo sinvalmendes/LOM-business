@@ -1,10 +1,11 @@
-package com.nanuvem.lom.kernel;
+package com.nanuvem.lom.kernel.entity;
 
 import com.nanuvem.lom.api.Facade;
-import com.nanuvem.lom.api.tests.CreateEntityServiceTest;
+import com.nanuvem.lom.api.tests.entity.DeleteEntityTest;
+import com.nanuvem.lom.kernel.KernelFacade;
 import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
-public class KernelCreateEntityServiceTest extends CreateEntityServiceTest {
+public class KernelDeleteEntityTest extends DeleteEntityTest {
 
 	private MemoryDaoFactory daoFactory;
 

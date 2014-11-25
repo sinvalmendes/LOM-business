@@ -38,15 +38,15 @@ public class AttributeServiceImpl {
 	}
 
 	private void validateCreate(Attribute attribute) {
-		this.validateExistingAttributeNotInEntity(attribute);
+		validateDuplicatedAttribute(attribute);
 		defineAttributeSequenceNumber(attribute);
 
-		this.validateNameAttribute(attribute);
+		validateAttributeName(attribute);
 
 		if (attribute.getType() == null) {
-			throw new MetadataException("The type of a Attribute is mandatory");
+			throw new MetadataException("The type of an Attribute is mandatory");
 		}
-		this.validateAttributeConfiguration(attribute);
+		validateAttributeConfiguration(attribute);
 	}
 
 	private void defineAttributeSequenceNumber(Attribute attribute) {
@@ -67,7 +67,7 @@ public class AttributeServiceImpl {
 		}
 	}
 
-	private void validateNameAttribute(Attribute attribute) {
+	private void validateAttributeName(Attribute attribute) {
 		if (attribute.getName() == null || attribute.getName().isEmpty()) {
 			throw new MetadataException("The name of an Attribute is mandatory");
 		}
@@ -144,7 +144,7 @@ public class AttributeServiceImpl {
 		return entity;
 	}
 
-	private void validateExistingAttributeNotInEntity(Attribute attribute) {
+	private void validateDuplicatedAttribute(Attribute attribute) {
 		List<Attribute> foundAttributes = this
 				.findAllAttributesForEntity(attribute.getEntity());
 		if (foundAttributes != null) {
@@ -181,7 +181,7 @@ public class AttributeServiceImpl {
 	public Attribute create(Attribute attribute) {
 		Entity entity = validateExistingEntityForAttribute(attribute);
 		attribute.setEntity(entity);
-		this.validateCreate(attribute);
+		validateCreate(attribute);
 		Attribute createdAttribute = this.attributeDao.create(attribute);
 		entityService.update(createdAttribute.getEntity());
 		return createdAttribute;
@@ -216,7 +216,7 @@ public class AttributeServiceImpl {
 	}
 
 	public Attribute update(Attribute attribute) {
-		this.validateNameAttribute(attribute);
+		this.validateAttributeName(attribute);
 		this.validateUpdateSequence(attribute);
 		this.validateUpdateType(attribute);
 		this.validateExistingAttributeNotInEntityOnUpdate(attribute);
