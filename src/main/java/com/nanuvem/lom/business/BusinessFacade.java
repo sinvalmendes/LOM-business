@@ -82,4 +82,8 @@ public class BusinessFacade implements Facade {
 		return instanceService.findInstanceById(id);
 	}
 
+    public List<Instance> findInstancesByEntityId(Long entityId) {
+        return instanceService.findInstancesByEntityId(entityId);
+    }
+
 }

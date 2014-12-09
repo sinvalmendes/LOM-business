@@ -138,28 +138,13 @@ public class InstanceServiceImpl {
 		}
 	}
 
-//	private void validateTypeOfValue(AttributeValue attributeValue) {
-//		if (attributeValue.getValue() != null) {
-//
-//			Attribute attribute = attributeValue.getAttribute();
-//			AttributeType attributeType = attribute.getType();
-//			AttributeTypeDefinition definition = definitionManager
-//					.get(attributeType.name());
-//			Class<?> attributeEntity = definition.getAttributeClass();
-//
-////			if (!attributeEntity.isInstance(attributeValue.getValue())) {
-////				throw new MetadataException(
-////						"Invalid value for the Instance. The '"
-////								+ attribute.getName()
-////								+ "' attribute can only get values ​​of type "
-////								+ attributeType);
-////			}
-//		}
-//	}
-
 	public Instance findInstanceById(Long id) {
 		return this.instanceDao.findInstanceById(id);
 	}
+
+    public List<Instance> findInstancesByEntityId(Long entityId) {
+        return this.instanceDao.findInstancesByEntityId(entityId);
+    }
 }
 
 class InstanceDaoDecorator implements InstanceDao {
@@ -193,6 +178,12 @@ class InstanceDaoDecorator implements InstanceDao {
 	public void delete(Long id) {
 		instanceDao.delete(id);
 	}
+
+    public List<Instance> findInstancesByEntityId(Long entityId) {
+        List<Instance> instances = Util.clone(instanceDao.findInstancesByEntityId(entityId));
+        Util.removeDefaultNamespaceForInstance(instances);
+        return instances;
+    }
 
 }
 

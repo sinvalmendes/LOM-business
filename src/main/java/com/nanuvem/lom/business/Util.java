@@ -101,4 +101,10 @@ public class Util {
 			throw new MetadataException(errorMessage);
 		}
 	}
+
+    public static void removeDefaultNamespaceForInstance(List<Instance> instances) {
+        for (Instance instance : instances) {
+            removeDefaultNamespace(instance);
+        }
+    }
 }
