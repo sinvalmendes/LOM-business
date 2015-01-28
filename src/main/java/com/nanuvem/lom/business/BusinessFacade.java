@@ -6,6 +6,7 @@ import com.nanuvem.lom.api.Attribute;
 import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.Facade;
 import com.nanuvem.lom.api.Instance;
+import com.nanuvem.lom.api.RelationType;
 import com.nanuvem.lom.api.dao.DaoFactory;
 import com.nanuvem.lom.business.validator.definition.AttributeTypeDefinitionManager;
 
@@ -14,6 +15,7 @@ public class BusinessFacade implements Facade {
 	private EntityServiceImpl entityService;
 	private AttributeServiceImpl attributeService;
 	private InstanceServiceImpl instanceService;
+	private RelationTypeServiceImpl relationTypeService;
 
 	public BusinessFacade(DaoFactory daoFactory) {
 		entityService = new EntityServiceImpl(daoFactory);
@@ -22,6 +24,7 @@ public class BusinessFacade implements Facade {
 				deployers);
 		instanceService = new InstanceServiceImpl(daoFactory, entityService,
 				attributeService, deployers);
+		relationTypeService = new RelationTypeServiceImpl(daoFactory);
 	}
 
 	public EntityServiceImpl getEntityService() {
@@ -85,5 +88,22 @@ public class BusinessFacade implements Facade {
     public List<Instance> findInstancesByEntityId(Long entityId) {
         return instanceService.findInstancesByEntityId(entityId);
     }
+
+	public RelationType create(RelationType relationType) {
+		return relationTypeService.create(relationType);
+	}
+
+	public RelationType findRelationTypeById(Long id) {
+		return relationTypeService.findRelationTypeById(id);
+	}
+
+	public List<RelationType> listAllRelationTypes() {
+		return relationTypeService.listAllRelationTypes();
+	}
+
+	public RelationType update(RelationType relationType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
