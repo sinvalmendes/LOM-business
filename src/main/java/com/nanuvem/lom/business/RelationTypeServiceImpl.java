@@ -3,6 +3,7 @@ package com.nanuvem.lom.business;
 import java.util.List;
 
 import com.nanuvem.lom.api.Attribute;
+import com.nanuvem.lom.api.Cardinality;
 import com.nanuvem.lom.api.MetadataException;
 import com.nanuvem.lom.api.RelationType;
 import com.nanuvem.lom.api.dao.DaoFactory;
@@ -18,6 +19,12 @@ public class RelationTypeServiceImpl {
 	}
 
 	public RelationType create(RelationType relationType) {
+		if (relationType.getSourceCardinality() == null) {
+			relationType.setSourceCardinality(Cardinality.ONE);
+		}
+		if (relationType.getTargetCardinality() == null) {
+			relationType.setTargetCardinality(Cardinality.ONE);
+		}
 		if (relationType.getSourceEntity() == null) {
 			throw new MetadataException(
 					"Invalid value for source entity: The source entity is mandatory");
@@ -25,6 +32,7 @@ public class RelationTypeServiceImpl {
 			throw new MetadataException(
 					"Invalid value for target entity: The target entity is mandatory");
 		}
+
 		RelationType createdRelationType = dao.create(relationType);
 		return createdRelationType;
 	}
@@ -35,6 +43,10 @@ public class RelationTypeServiceImpl {
 
 	public List<RelationType> listAllRelationTypes() {
 		return dao.listAllRelationTypes();
+	}
+
+	public void delete(Long id) {
+		dao.delete(id);
 	}
 
 }
@@ -62,5 +74,9 @@ class RelationTypeDaoDecorator implements RelationTypeDao {
 
 	public List<RelationType> listAllRelationTypes() {
 		return this.relationTypeDao.listAllRelationTypes();
+	}
+
+	public void delete(Long id) {
+		this.relationTypeDao.delete(id);
 	}
 }

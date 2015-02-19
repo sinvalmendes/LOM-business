@@ -83,12 +83,13 @@ public class InstanceServiceImpl {
 
 		AttributeTypeDefinition definition = definitionManager.get(value
 				.getAttribute().getType().name());
-		AttributeTypeValidator typeValidator = new AttributeTypeValidator(definition.getAttributeClass());
+		AttributeTypeValidator typeValidator = new AttributeTypeValidator(
+				definition.getAttributeClass());
 		typeValidator.validateValue(errors, null, value);
 
 		if (configuration != null && !configuration.isEmpty()) {
 			JsonNode jsonNode = load(configuration);
-			
+
 			for (AttributeValidator validator : definition.getValidators()) {
 				validator.validateValue(errors, jsonNode, value);
 			}
@@ -108,7 +109,7 @@ public class InstanceServiceImpl {
 						+ instance.getEntity().getFullName() + ": "
 						+ attributeValue.getAttribute().getName());
 			}
-//			this.validateTypeOfValue(attributeValue);
+			// this.validateTypeOfValue(attributeValue);
 
 			String configuration = attributeValue.getAttribute()
 					.getConfiguration();
@@ -142,9 +143,9 @@ public class InstanceServiceImpl {
 		return this.instanceDao.findInstanceById(id);
 	}
 
-    public List<Instance> findInstancesByEntityId(Long entityId) {
-        return this.instanceDao.findInstancesByEntityId(entityId);
-    }
+	public List<Instance> findInstancesByEntityId(Long entityId) {
+		return this.instanceDao.findInstancesByEntityId(entityId);
+	}
 }
 
 class InstanceDaoDecorator implements InstanceDao {
@@ -179,11 +180,12 @@ class InstanceDaoDecorator implements InstanceDao {
 		instanceDao.delete(id);
 	}
 
-    public List<Instance> findInstancesByEntityId(Long entityId) {
-        List<Instance> instances = Util.clone(instanceDao.findInstancesByEntityId(entityId));
-        Util.removeDefaultNamespaceForInstance(instances);
-        return instances;
-    }
+	public List<Instance> findInstancesByEntityId(Long entityId) {
+		List<Instance> instances = Util.clone(instanceDao
+				.findInstancesByEntityId(entityId));
+		Util.removeDefaultNamespaceForInstance(instances);
+		return instances;
+	}
 
 }
 

@@ -1,13 +1,13 @@
-package com.nanuvem.lom.business.relationtype;
+package com.nanuvem.lom.business.relation;
 
 import org.junit.Before;
 
 import com.nanuvem.lom.api.Facade;
-import com.nanuvem.lom.api.tests.relationtype.CreateRelationTypeTest;
+import com.nanuvem.lom.api.tests.relationtype.ReadRelationTypeTest;
 import com.nanuvem.lom.business.BusinessFacade;
 import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
-public class BusinessCreateRelationTypeTest extends CreateRelationTypeTest {
+public class BusinessReadRelationTest extends ReadRelationTypeTest {
 
 	private MemoryDaoFactory daoFactory;
 

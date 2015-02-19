@@ -14,10 +14,8 @@ public class MinimumValueAttributeConfigurationValidator implements
 		if (value == null || Integer.parseInt(value) < minValue) {
 
 			String message = (defaultValue) ? "the default value is smaller than minvalue"
-					: "The value for '"
-							+ attribute
-							+ "' must be greater or equal to "
-							+ minValue;
+					: "The value for '" + attribute
+							+ "' must be greater or equal to " + minValue;
 			ValidationError.addError(errors, message);
 		}
 

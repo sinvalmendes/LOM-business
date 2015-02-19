@@ -21,11 +21,10 @@ public class MinimumSymbolsAttributeConfigurationValidator implements
 		if (numericSymbolCounter < minSymbols) {
 			String messagePlural = minSymbols > 1 ? "s" : "";
 
-			String message = (defaultValue) ? 
-					"the default value must have at least "
-					+ minSymbols + " symbol character" + messagePlural: 
-					"The value for '" + attribute + "' must have at least "
-					+ minSymbols + " symbol character" + messagePlural;
+			String message = (defaultValue) ? "the default value must have at least "
+					+ minSymbols + " symbol character" + messagePlural
+					: "The value for '" + attribute + "' must have at least "
+							+ minSymbols + " symbol character" + messagePlural;
 
 			ValidationError.addError(errors, message);
 		}

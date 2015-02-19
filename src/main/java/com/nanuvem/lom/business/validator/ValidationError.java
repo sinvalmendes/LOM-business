@@ -18,5 +18,5 @@ public class ValidationError {
 		ValidationError validationError = new ValidationError(message);
 		errors.add(validationError);
 	}
-	
+
 }

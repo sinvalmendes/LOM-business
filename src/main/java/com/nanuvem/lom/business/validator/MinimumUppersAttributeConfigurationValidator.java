@@ -20,11 +20,11 @@ public class MinimumUppersAttributeConfigurationValidator implements
 		if (uppercaseCharacterCounter < minUppers) {
 			String messagePlural = minUppers > 1 ? "s" : "";
 
-			String message = (defaultValue) ? 
-					"the default value must have at least "
-					+ minUppers + " upper case character" + messagePlural : 
-					"The value for '" + attribute + "' must have at least "
-					+ minUppers + " uppercase character" + messagePlural;
+			String message = (defaultValue) ? "the default value must have at least "
+					+ minUppers + " upper case character" + messagePlural
+					: "The value for '" + attribute + "' must have at least "
+							+ minUppers + " uppercase character"
+							+ messagePlural;
 			ValidationError.addError(errors, message);
 		}
 	}

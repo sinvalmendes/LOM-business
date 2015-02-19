@@ -8,6 +8,7 @@ public interface ValueValidator<T> {
 
 	AttributeValidator createFieldValidator(String field);
 
-	void validate(List<ValidationError> errors, String attribute, String value, T configurationValue, boolean defaultValue);
+	void validate(List<ValidationError> errors, String attribute, String value,
+			T configurationValue, boolean defaultValue);
 
 }

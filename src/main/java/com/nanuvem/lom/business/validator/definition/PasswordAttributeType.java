@@ -28,34 +28,40 @@ public class PasswordAttributeType implements AttributeTypeDefinition {
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MINLENGTH_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MinimumLengthAttributeConfigurationValidator(), Integer.class));
+				new MinimumLengthAttributeConfigurationValidator(),
+				Integer.class));
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MAXLENGTH_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MaximumLengthAttributeConfigurationValidator(), Integer.class));
+				new MaximumLengthAttributeConfigurationValidator(),
+				Integer.class));
 		validators.add(new MinAndMaxValidator(
 				Attribute.MAXLENGTH_CONFIGURATION_NAME,
 				Attribute.MINLENGTH_CONFIGURATION_NAME));
-		
+
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MINUPPERS_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MinimumUppersAttributeConfigurationValidator(), Integer.class));
+				new MinimumUppersAttributeConfigurationValidator(),
+				Integer.class));
 
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MINNUMBERS_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MinimumNumbersAttributeConfigurationValidator(), Integer.class));
+				new MinimumNumbersAttributeConfigurationValidator(),
+				Integer.class));
 
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MINSYMBOLS_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MinimumSymbolsAttributeConfigurationValidator(), Integer.class));
+				new MinimumSymbolsAttributeConfigurationValidator(),
+				Integer.class));
 
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MAXREPEAT_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MaximumRepeatAttributeConfigurationValidator(), Integer.class));
+				new MaximumRepeatAttributeConfigurationValidator(),
+				Integer.class));
 
 		validators.add(new ConfigurationFieldValidator(
 				Attribute.MANDATORY_CONFIGURATION_NAME, Boolean.class));

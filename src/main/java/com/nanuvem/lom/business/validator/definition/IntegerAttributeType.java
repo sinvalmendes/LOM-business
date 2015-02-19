@@ -18,18 +18,20 @@ public class IntegerAttributeType implements AttributeTypeDefinition {
 		List<AttributeValidator> validators = new ArrayList<AttributeValidator>();
 
 		validators.add(new MandatoryValidator());
-		
+
 		validators.add(new ConfigurationFieldValidator(
 				Attribute.DEFAULT_CONFIGURATION_NAME, Integer.class));
 
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MINVALUE_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MinimumValueAttributeConfigurationValidator(), Integer.class));
+				new MinimumValueAttributeConfigurationValidator(),
+				Integer.class));
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MAXVALUE_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MaximumValueAttributeConfigurationValidator(), Integer.class));
+				new MaximumValueAttributeConfigurationValidator(),
+				Integer.class));
 		validators.add(new MinAndMaxValidator(
 				Attribute.MAXVALUE_CONFIGURATION_NAME,
 				Attribute.MINVALUE_CONFIGURATION_NAME));

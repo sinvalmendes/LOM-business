@@ -20,11 +20,10 @@ public class MinimumNumbersAttributeConfigurationValidator implements
 		if (numericCharacterCounter < minNumbers) {
 			String messagePlural = minNumbers > 1 ? "s" : "";
 
-			String message = (defaultValue) ? 
-					"the default value must have at least "
-					+ minNumbers + " numerical character" + messagePlural : 
-					"The value for '" + attribute + "' must be at least "
-					+ minNumbers + " number" + messagePlural;
+			String message = (defaultValue) ? "the default value must have at least "
+					+ minNumbers + " numerical character" + messagePlural
+					: "The value for '" + attribute + "' must be at least "
+							+ minNumbers + " number" + messagePlural;
 
 			ValidationError.addError(errors, message);
 		}

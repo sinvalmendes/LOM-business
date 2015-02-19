@@ -102,9 +102,10 @@ public class Util {
 		}
 	}
 
-    public static void removeDefaultNamespaceForInstance(List<Instance> instances) {
-        for (Instance instance : instances) {
-            removeDefaultNamespace(instance);
-        }
-    }
+	public static void removeDefaultNamespaceForInstance(
+			List<Instance> instances) {
+		for (Instance instance : instances) {
+			removeDefaultNamespace(instance);
+		}
+	}
 }

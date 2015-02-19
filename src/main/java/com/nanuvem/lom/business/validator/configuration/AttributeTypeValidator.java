@@ -18,16 +18,16 @@ public class AttributeTypeValidator implements AttributeValidator {
 
 	public void validateDefault(List<ValidationError> errors,
 			JsonNode configuration) {
-		//Do not need to validate default value
+		// Do not need to validate default value
 	}
 
 	public void validateValue(List<ValidationError> errors,
 			JsonNode configuration, AttributeValue value) {
-		
+
 		if (value.getValue() == null) {
 			return;
 		}
-		
+
 		if (clazz.isAssignableFrom(Boolean.class)) {
 			if (!"true".equals(value.getValue())
 					|| !"false".equals(value.getValue())) {

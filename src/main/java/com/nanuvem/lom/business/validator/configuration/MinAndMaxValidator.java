@@ -1,6 +1,5 @@
 package com.nanuvem.lom.business.validator.configuration;
 
-
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
@@ -8,8 +7,7 @@ import org.codehaus.jackson.JsonNode;
 import com.nanuvem.lom.api.AttributeValue;
 import com.nanuvem.lom.business.validator.ValidationError;
 
-public class MinAndMaxValidator implements
-		AttributeValidator {
+public class MinAndMaxValidator implements AttributeValidator {
 
 	private String maxField;
 	private String minField;
@@ -19,7 +17,8 @@ public class MinAndMaxValidator implements
 		this.minField = minField;
 	}
 
-	public void validateDefault(List<ValidationError> errors, JsonNode configuration) {
+	public void validateDefault(List<ValidationError> errors,
+			JsonNode configuration) {
 
 		if (configuration.has(maxField) && configuration.has(minField)) {
 
@@ -27,8 +26,8 @@ public class MinAndMaxValidator implements
 			int maxLengthValue = configuration.get(maxField).getIntValue();
 
 			if (minLengthValue > maxLengthValue) {
-				ValidationError.addError(errors, "the " + minField + " is greater than "
-						+ maxField);
+				ValidationError.addError(errors, "the " + minField
+						+ " is greater than " + maxField);
 			}
 		}
 
@@ -36,7 +35,7 @@ public class MinAndMaxValidator implements
 
 	public void validateValue(List<ValidationError> errors,
 			JsonNode configuration, AttributeValue value) {
-		//Do not need to validate value
+		// Do not need to validate value
 	}
 
 }

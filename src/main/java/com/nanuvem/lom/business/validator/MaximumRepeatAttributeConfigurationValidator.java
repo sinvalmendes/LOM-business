@@ -33,10 +33,8 @@ public class MaximumRepeatAttributeConfigurationValidator implements
 		if (characterCounter > maxRepeat) {
 			String messagePlural = characterCounter > 1 ? " more than "
 					+ (maxRepeat + 1) + " " : " ";
-			String message = (defaultValue) ? 
-					"the default value must not have"
-					+ messagePlural + "repeated characters" : 
-					"The value for '"
+			String message = (defaultValue) ? "the default value must not have"
+					+ messagePlural + "repeated characters" : "The value for '"
 					+ attribute + "' must not have" + messagePlural
 					+ "repeated characters";
 

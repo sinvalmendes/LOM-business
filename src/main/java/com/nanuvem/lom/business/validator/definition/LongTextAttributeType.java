@@ -24,11 +24,13 @@ public class LongTextAttributeType implements AttributeTypeDefinition {
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MINLENGTH_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MinimumLengthAttributeConfigurationValidator(), Integer.class));
+				new MinimumLengthAttributeConfigurationValidator(),
+				Integer.class));
 		validators.add(new AttributeValidatorWithValue<Integer>(
 				Attribute.MAXLENGTH_CONFIGURATION_NAME,
 				Attribute.DEFAULT_CONFIGURATION_NAME,
-				new MaximumLengthAttributeConfigurationValidator(), Integer.class));
+				new MaximumLengthAttributeConfigurationValidator(),
+				Integer.class));
 		validators.add(new MinAndMaxValidator(
 				Attribute.MAXLENGTH_CONFIGURATION_NAME,
 				Attribute.MINLENGTH_CONFIGURATION_NAME));

@@ -85,9 +85,9 @@ public class BusinessFacade implements Facade {
 		return instanceService.findInstanceById(id);
 	}
 
-    public List<Instance> findInstancesByEntityId(Long entityId) {
-        return instanceService.findInstancesByEntityId(entityId);
-    }
+	public List<Instance> findInstancesByEntityId(Long entityId) {
+		return instanceService.findInstancesByEntityId(entityId);
+	}
 
 	public RelationType create(RelationType relationType) {
 		return relationTypeService.create(relationType);
@@ -104,6 +104,10 @@ public class BusinessFacade implements Facade {
 	public RelationType update(RelationType relationType) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void deleteRelationType(Long id) {
+		relationTypeService.delete(id);
 	}
 
 }

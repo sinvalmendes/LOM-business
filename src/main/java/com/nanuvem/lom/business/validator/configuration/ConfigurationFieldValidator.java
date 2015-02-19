@@ -36,14 +36,15 @@ public class ConfigurationFieldValidator implements AttributeValidator {
 
 		if (clazz.isAssignableFrom(String.class) && configuration.has(field)) {
 			if (!configuration.get(field).isTextual()) {
-				ValidationError.addError(errors, "the " + field + " value must be a string");
+				ValidationError.addError(errors, "the " + field
+						+ " value must be a string");
 			}
 		}
 	}
 
 	public void validateValue(List<ValidationError> errors,
 			JsonNode configuration, AttributeValue value) {
-		//Do not need to validate value
+		// Do not need to validate value
 	}
 
 }

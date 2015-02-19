@@ -10,7 +10,7 @@ public class MinimumLengthAttributeConfigurationValidator implements
 
 	public void validate(List<ValidationError> errors, String attribute,
 			String value, Integer minLength, boolean defaultValue) {
-		
+
 		if (value.length() < minLength) {
 
 			String message = (defaultValue) ? "the default value is smaller than minlength"

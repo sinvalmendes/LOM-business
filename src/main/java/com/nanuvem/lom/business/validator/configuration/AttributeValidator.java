@@ -11,5 +11,6 @@ public interface AttributeValidator {
 
 	void validateDefault(List<ValidationError> errors, JsonNode configuration);
 
-	void validateValue(List<ValidationError> errors, JsonNode configuration, AttributeValue value);
+	void validateValue(List<ValidationError> errors, JsonNode configuration,
+			AttributeValue value);
 }
