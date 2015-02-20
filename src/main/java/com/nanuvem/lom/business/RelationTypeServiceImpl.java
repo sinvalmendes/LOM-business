@@ -2,8 +2,8 @@ package com.nanuvem.lom.business;
 
 import java.util.List;
 
-import com.nanuvem.lom.api.Attribute;
 import com.nanuvem.lom.api.Cardinality;
+import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.MetadataException;
 import com.nanuvem.lom.api.RelationType;
 import com.nanuvem.lom.api.dao.DaoFactory;
@@ -12,10 +12,12 @@ import com.nanuvem.lom.api.dao.RelationTypeDao;
 public class RelationTypeServiceImpl {
 
 	private RelationTypeDao dao;
+	private EntityServiceImpl entityService;
 
 	RelationTypeServiceImpl(DaoFactory daoFactory) {
 		this.dao = new RelationTypeDaoDecorator(
 				daoFactory.createRelationTypeDao());
+		this.entityService = new EntityServiceImpl(daoFactory);
 	}
 
 	public RelationType create(RelationType relationType) {
@@ -49,6 +51,43 @@ public class RelationTypeServiceImpl {
 		dao.delete(id);
 	}
 
+	public RelationType update(RelationType relationType) {
+		validateRelationTypeForUpdate(relationType);
+		if (!relationType.isBidirectional()) {
+			relationType.setReverseName(null);
+		}
+		/*
+		 * Validate if the relationType already exists in DB Validate if
+		 * thesourceEntity already exists in DB Validate if the targetEntity
+		 * already exists in DB
+		 */
+		return dao.update(relationType);
+	}
+
+	private boolean validateRelationTypeForUpdate(RelationType relationType) {
+		/*
+		 * TODO
+		 */
+		Entity sourceEntity = this.entityService.findById(relationType
+				.getSourceEntity().getId());
+		if (sourceEntity == null) {
+			throw new MetadataException(
+					"Invalid argument: The source entity is mandatory!");
+		}
+		Entity targetEntity = this.entityService.findById(relationType
+				.getTargetEntity().getId());
+		if (targetEntity == null) {
+			throw new MetadataException(
+					"Invalid argument: The target entity is mandatory!");
+		}
+		if (relationType.getReverseName() == null
+				&& relationType.isBidirectional()) {
+			throw new MetadataException(
+					"Invalid argument: Reverse Name is mandatory when the relationship is bidirectional!");
+		}
+		return true;
+	}
+
 }
 
 class RelationTypeDaoDecorator implements RelationTypeDao {
@@ -67,9 +106,8 @@ class RelationTypeDaoDecorator implements RelationTypeDao {
 		return this.relationTypeDao.findRelationTypeById(id);
 	}
 
-	public Attribute update(RelationType relationType) {
-		// TODO Auto-generated method stub
-		return null;
+	public RelationType update(RelationType relationType) {
+		return this.relationTypeDao.update(relationType);
 	}
 
 	public List<RelationType> listAllRelationTypes() {

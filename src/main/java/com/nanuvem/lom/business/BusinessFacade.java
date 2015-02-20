@@ -6,6 +6,7 @@ import com.nanuvem.lom.api.Attribute;
 import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.Facade;
 import com.nanuvem.lom.api.Instance;
+import com.nanuvem.lom.api.Relation;
 import com.nanuvem.lom.api.RelationType;
 import com.nanuvem.lom.api.dao.DaoFactory;
 import com.nanuvem.lom.business.validator.definition.AttributeTypeDefinitionManager;
@@ -102,12 +103,16 @@ public class BusinessFacade implements Facade {
 	}
 
 	public RelationType update(RelationType relationType) {
-		// TODO Auto-generated method stub
-		return null;
+		return relationTypeService.update(relationType);
 	}
 
 	public void deleteRelationType(Long id) {
 		relationTypeService.delete(id);
+	}
+
+	public Relation create(Relation relation) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
