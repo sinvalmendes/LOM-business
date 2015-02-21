@@ -4,19 +4,19 @@ import java.util.List;
 
 public class ValidationError {
 
-	private String message;
+    private String message;
 
-	public ValidationError(String message) {
-		this.message = message;
-	}
+    public ValidationError(String message) {
+        this.message = message;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public static void addError(List<ValidationError> errors, String message) {
-		ValidationError validationError = new ValidationError(message);
-		errors.add(validationError);
-	}
+    public static void addError(List<ValidationError> errors, String message) {
+        ValidationError validationError = new ValidationError(message);
+        errors.add(validationError);
+    }
 
 }

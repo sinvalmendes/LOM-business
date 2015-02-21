@@ -9,8 +9,7 @@ import com.nanuvem.lom.business.validator.ValidationError;
 
 public interface AttributeValidator {
 
-	void validateDefault(List<ValidationError> errors, JsonNode configuration);
+    void validateDefault(List<ValidationError> errors, JsonNode configuration);
 
-	void validateValue(List<ValidationError> errors, JsonNode configuration,
-			AttributeValue value);
+    void validateValue(List<ValidationError> errors, JsonNode configuration, AttributeValue value);
 }

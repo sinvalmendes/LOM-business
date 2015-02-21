@@ -7,12 +7,12 @@ import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
 public class BusinessCreateEntityTest extends CreateEntityTest {
 
-	private MemoryDaoFactory daoFactory;
+    private MemoryDaoFactory daoFactory;
 
-	@Override
-	public Facade createFacade() {
-		daoFactory = new MemoryDaoFactory();
-		return new BusinessFacade(daoFactory);
-	}
+    @Override
+    public Facade createFacade() {
+        daoFactory = new MemoryDaoFactory();
+        return new BusinessFacade(daoFactory);
+    }
 
 }

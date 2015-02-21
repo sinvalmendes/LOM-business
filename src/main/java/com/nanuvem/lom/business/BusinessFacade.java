@@ -13,106 +13,119 @@ import com.nanuvem.lom.business.validator.definition.AttributeTypeDefinitionMana
 
 public class BusinessFacade implements Facade {
 
-	private EntityServiceImpl entityService;
-	private AttributeServiceImpl attributeService;
-	private InstanceServiceImpl instanceService;
-	private RelationTypeServiceImpl relationTypeService;
+    private EntityServiceImpl entityService;
+    private AttributeServiceImpl attributeService;
+    private InstanceServiceImpl instanceService;
+    private RelationTypeServiceImpl relationTypeService;
+    private RelationServiceImpl relationService;
 
-	public BusinessFacade(DaoFactory daoFactory) {
-		entityService = new EntityServiceImpl(daoFactory);
-		AttributeTypeDefinitionManager deployers = new AttributeTypeDefinitionManager();
-		attributeService = new AttributeServiceImpl(daoFactory, entityService,
-				deployers);
-		instanceService = new InstanceServiceImpl(daoFactory, entityService,
-				attributeService, deployers);
-		relationTypeService = new RelationTypeServiceImpl(daoFactory);
-	}
+    public BusinessFacade(DaoFactory daoFactory) {
+        entityService = new EntityServiceImpl(daoFactory);
+        AttributeTypeDefinitionManager deployers = new AttributeTypeDefinitionManager();
+        attributeService = new AttributeServiceImpl(daoFactory, entityService, deployers);
+        instanceService = new InstanceServiceImpl(daoFactory, entityService, attributeService, deployers);
+        relationTypeService = new RelationTypeServiceImpl(daoFactory);
+        relationService = new RelationServiceImpl(daoFactory);
+    }
 
-	public EntityServiceImpl getEntityService() {
-		return this.entityService;
-	}
+    public EntityServiceImpl getEntityService() {
+        return this.entityService;
+    }
 
-	public Entity create(Entity entity) {
-		return entityService.create(entity);
-	}
+    public Entity create(Entity entity) {
+        return entityService.create(entity);
+    }
 
-	public Entity findEntityById(Long id) {
-		return entityService.findById(id);
-	}
+    public Entity findEntityById(Long id) {
+        return entityService.findById(id);
+    }
 
-	public Entity findEntityByFullName(String fullName) {
-		return entityService.findByFullName(fullName);
-	}
+    public Entity findEntityByFullName(String fullName) {
+        return entityService.findByFullName(fullName);
+    }
 
-	public List<Entity> listAllEntities() {
-		return entityService.listAll();
-	}
+    public List<Entity> listAllEntities() {
+        return entityService.listAll();
+    }
 
-	public List<Entity> listEntitiesByFullName(String fragment) {
-		return entityService.listByFullName(fragment);
-	}
+    public List<Entity> listEntitiesByFullName(String fragment) {
+        return entityService.listByFullName(fragment);
+    }
 
-	public Entity update(Entity entity) {
-		return entityService.update(entity);
-	}
+    public Entity update(Entity entity) {
+        return entityService.update(entity);
+    }
 
-	public void deleteEntity(Long id) {
-		entityService.delete(id);
-	}
+    public void deleteEntity(Long id) {
+        entityService.delete(id);
+    }
 
-	public Attribute create(Attribute attribute) {
-		return attributeService.create(attribute);
-	}
+    public Attribute create(Attribute attribute) {
+        return attributeService.create(attribute);
+    }
 
-	public Attribute findAttributeById(Long id) {
-		return attributeService.findAttributeById(id);
-	}
+    public Attribute findAttributeById(Long id) {
+        return attributeService.findAttributeById(id);
+    }
 
-	public Attribute findAttributeByNameAndEntityFullName(String name,
-			String fullEntityName) {
-		return attributeService.findAttributeByNameAndEntityFullName(name,
-				fullEntityName);
-	}
+    public Attribute findAttributeByNameAndEntityFullName(String name, String fullEntityName) {
+        return attributeService.findAttributeByNameAndEntityFullName(name, fullEntityName);
+    }
 
-	public Attribute update(Attribute attribute) {
-		return attributeService.update(attribute);
-	}
+    public Attribute update(Attribute attribute) {
+        return attributeService.update(attribute);
+    }
 
-	public Instance create(Instance instance) {
-		return instanceService.create(instance);
-	}
+    public Instance create(Instance instance) {
+        return instanceService.create(instance);
+    }
 
-	public Instance findInstanceById(Long id) {
-		return instanceService.findInstanceById(id);
-	}
+    public Instance findInstanceById(Long id) {
+        return instanceService.findInstanceById(id);
+    }
 
-	public List<Instance> findInstancesByEntityId(Long entityId) {
-		return instanceService.findInstancesByEntityId(entityId);
-	}
+    public List<Instance> findInstancesByEntityId(Long entityId) {
+        return instanceService.findInstancesByEntityId(entityId);
+    }
 
-	public RelationType create(RelationType relationType) {
-		return relationTypeService.create(relationType);
-	}
+    public RelationType create(RelationType relationType) {
+        return relationTypeService.create(relationType);
+    }
 
-	public RelationType findRelationTypeById(Long id) {
-		return relationTypeService.findRelationTypeById(id);
-	}
+    public RelationType findRelationTypeById(Long id) {
+        return relationTypeService.findRelationTypeById(id);
+    }
 
-	public List<RelationType> listAllRelationTypes() {
-		return relationTypeService.listAllRelationTypes();
-	}
+    public List<RelationType> listAllRelationTypes() {
+        return relationTypeService.listAllRelationTypes();
+    }
 
-	public RelationType update(RelationType relationType) {
-		return relationTypeService.update(relationType);
-	}
+    public RelationType update(RelationType relationType) {
+        return relationTypeService.update(relationType);
+    }
 
-	public void deleteRelationType(Long id) {
-		relationTypeService.delete(id);
-	}
+    public void deleteRelationType(Long id) {
+        relationTypeService.delete(id);
+    }
 
-	public Relation create(Relation relation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Relation create(Relation relation) {
+        return relationService.create(relation);
+    }
+
+    public Relation findRelationById(Long id) {
+        return relationService.findRelationById(id);
+    }
+
+    public List<Relation> listAllRelations() {
+        return relationService.listAllRelations();
+    }
+
+    public Relation update(Relation relation) {
+        return relationService.update(relation);
+    }
+
+    public void deleteRelation(Long id) {
+        relationService.delete(id);
+    }
 
 }

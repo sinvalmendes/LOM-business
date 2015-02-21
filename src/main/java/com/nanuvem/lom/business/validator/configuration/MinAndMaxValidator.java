@@ -9,33 +9,30 @@ import com.nanuvem.lom.business.validator.ValidationError;
 
 public class MinAndMaxValidator implements AttributeValidator {
 
-	private String maxField;
-	private String minField;
+    private String maxField;
+    private String minField;
 
-	public MinAndMaxValidator(String maxField, String minField) {
-		this.maxField = maxField;
-		this.minField = minField;
-	}
+    public MinAndMaxValidator(String maxField, String minField) {
+        this.maxField = maxField;
+        this.minField = minField;
+    }
 
-	public void validateDefault(List<ValidationError> errors,
-			JsonNode configuration) {
+    public void validateDefault(List<ValidationError> errors, JsonNode configuration) {
 
-		if (configuration.has(maxField) && configuration.has(minField)) {
+        if (configuration.has(maxField) && configuration.has(minField)) {
 
-			int minLengthValue = configuration.get(minField).getIntValue();
-			int maxLengthValue = configuration.get(maxField).getIntValue();
+            int minLengthValue = configuration.get(minField).getIntValue();
+            int maxLengthValue = configuration.get(maxField).getIntValue();
 
-			if (minLengthValue > maxLengthValue) {
-				ValidationError.addError(errors, "the " + minField
-						+ " is greater than " + maxField);
-			}
-		}
+            if (minLengthValue > maxLengthValue) {
+                ValidationError.addError(errors, "the " + minField + " is greater than " + maxField);
+            }
+        }
 
-	}
+    }
 
-	public void validateValue(List<ValidationError> errors,
-			JsonNode configuration, AttributeValue value) {
-		// Do not need to validate value
-	}
+    public void validateValue(List<ValidationError> errors, JsonNode configuration, AttributeValue value) {
+        // Do not need to validate value
+    }
 
 }

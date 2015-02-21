@@ -7,9 +7,9 @@ import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
 public class BusinessObjectAttributeTest extends ObjectAttributeTest {
 
-	@Override
-	public Facade createFacade() {
-		return new BusinessFacade(new MemoryDaoFactory());
-	}
+    @Override
+    public Facade createFacade() {
+        return new BusinessFacade(new MemoryDaoFactory());
+    }
 
 }

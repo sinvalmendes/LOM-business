@@ -9,16 +9,16 @@ import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
 public class BusinessUpdateRelationTest extends UpdateRelationTypeTest {
 
-	private MemoryDaoFactory daoFactory;
+    private MemoryDaoFactory daoFactory;
 
-	@Override
-	public Facade createFacade() {
-		daoFactory = new MemoryDaoFactory();
-		return new BusinessFacade(daoFactory);
-	}
+    @Override
+    public Facade createFacade() {
+        daoFactory = new MemoryDaoFactory();
+        return new BusinessFacade(daoFactory);
+    }
 
-	@Before
-	public void setUp() {
-		this.createFacade();
-	}
+    @Before
+    public void setUp() {
+        this.createFacade();
+    }
 }

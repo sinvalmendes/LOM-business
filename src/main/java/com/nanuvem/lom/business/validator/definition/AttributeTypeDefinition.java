@@ -6,13 +6,13 @@ import com.nanuvem.lom.business.validator.configuration.AttributeValidator;
 
 public interface AttributeTypeDefinition {
 
-	List<AttributeValidator> getValidators();
+    List<AttributeValidator> getValidators();
 
-	/**
-	 * Returns true when this attribute type deployer accepts the 'fieldName'
-	 * configuration field
-	 */
-	boolean containsConfigurationField(String fieldName);
+    /**
+     * Returns true when this attribute type deployer accepts the 'fieldName'
+     * configuration field
+     */
+    boolean containsConfigurationField(String fieldName);
 
-	Class<?> getAttributeClass();
+    Class<?> getAttributeClass();
 }

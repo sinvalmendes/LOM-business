@@ -7,9 +7,9 @@ import com.nanuvem.lom.kernel.dao.MemoryDaoFactory;
 
 public class BusinessPasswordAttributeTest extends PasswordAttributeTest {
 
-	@Override
-	public Facade createFacade() {
-		return new BusinessFacade(new MemoryDaoFactory());
-	}
+    @Override
+    public Facade createFacade() {
+        return new BusinessFacade(new MemoryDaoFactory());
+    }
 
 }
