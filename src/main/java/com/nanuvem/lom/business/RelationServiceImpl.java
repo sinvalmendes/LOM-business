@@ -2,9 +2,11 @@ package com.nanuvem.lom.business;
 
 import java.util.List;
 
+import com.nanuvem.lom.api.Cardinality;
 import com.nanuvem.lom.api.Instance;
 import com.nanuvem.lom.api.MetadataException;
 import com.nanuvem.lom.api.Relation;
+import com.nanuvem.lom.api.RelationType;
 import com.nanuvem.lom.api.dao.DaoFactory;
 import com.nanuvem.lom.api.dao.RelationDao;
 import com.nanuvem.lom.business.validator.definition.AttributeTypeDefinitionManager;
@@ -39,6 +41,13 @@ public class RelationServiceImpl {
         if (targetInstance == null) {
             throw new MetadataException("Invalid argument: The target instance is mandatory!");
         }
+        if (relation.getRelationType().getTargetCardinality() == Cardinality.ONE) {
+            List<Relation> sourceInstanceRelations = this.findRelationsBySourceInstance(sourceInstance);
+            if (sourceInstanceRelations.size() != 0) {
+                throw new MetadataException(
+                        "Invalid argument, the target cardinality is ONE, the target instance cannot be associated to the source instance!");
+            }
+        }
         Relation createdRelation = dao.create(relation);
         return createdRelation;
     }
@@ -58,6 +67,14 @@ public class RelationServiceImpl {
 
     public void delete(Long id) {
         dao.delete(id);
+    }
+
+    public List<Relation> findRelationsBySourceInstance(Instance source) {
+        return dao.findRelationsBySourceInstance(source);
+    }
+
+    public List<Relation> findRelationsByRelationType(RelationType relationType) {
+        return dao.findRelationsByRelationType(relationType);
     }
 
 }
@@ -88,6 +105,14 @@ class RelationDaoDecorator implements RelationDao {
 
     public void delete(Long id) {
         this.relationDao.delete(id);
+    }
+
+    public List<Relation> findRelationsBySourceInstance(Instance source) {
+        return this.relationDao.findRelationsBySourceInstance(source);
+    }
+
+    public List<Relation> findRelationsByRelationType(RelationType relationType) {
+        return this.relationDao.findRelationsByRelationType(relationType);
     }
 
 }

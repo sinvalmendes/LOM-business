@@ -5,6 +5,7 @@ import java.util.List;
 import com.nanuvem.lom.api.Cardinality;
 import com.nanuvem.lom.api.Entity;
 import com.nanuvem.lom.api.MetadataException;
+import com.nanuvem.lom.api.Relation;
 import com.nanuvem.lom.api.RelationType;
 import com.nanuvem.lom.api.dao.DaoFactory;
 import com.nanuvem.lom.api.dao.RelationTypeDao;
@@ -13,10 +14,12 @@ public class RelationTypeServiceImpl {
 
     private RelationTypeDao dao;
     private EntityServiceImpl entityService;
+    private RelationServiceImpl relationService;
 
     RelationTypeServiceImpl(DaoFactory daoFactory) {
         this.dao = new RelationTypeDaoDecorator(daoFactory.createRelationTypeDao());
         this.entityService = new EntityServiceImpl(daoFactory);
+        this.relationService = new RelationServiceImpl(daoFactory);
     }
 
     public RelationType create(RelationType relationType) {
@@ -58,13 +61,27 @@ public class RelationTypeServiceImpl {
          * thesourceEntity already exists in DB Validate if the targetEntity
          * already exists in DB
          */
+        this.executeCardinalityChanges(relationType);
         return dao.update(relationType);
     }
 
+    private void executeCardinalityChanges(RelationType relationType) {
+        RelationType oldRelationType = this.findRelationTypeById(relationType.getId());
+        if (oldRelationType.getSourceCardinality() == Cardinality.MANY
+                && relationType.getSourceCardinality() == Cardinality.ONE) {
+            if (oldRelationType.getTargetCardinality() == Cardinality.MANY
+                    && relationType.getTargetCardinality() == Cardinality.ONE) {
+                List<Relation> oldRelationTypeRelations = this.relationService
+                        .findRelationsByRelationType(oldRelationType);
+                oldRelationTypeRelations.remove(0);
+                for (Relation relation : oldRelationTypeRelations) {
+                    relationService.delete(relation.getId());
+                }
+            }
+        }
+    }
+
     private boolean validateRelationTypeForUpdate(RelationType relationType) {
-        /*
-         * TODO
-         */
         Entity sourceEntity = this.entityService.findById(relationType.getSourceEntity().getId());
         if (sourceEntity == null) {
             throw new MetadataException("Invalid argument: The source entity is mandatory!");

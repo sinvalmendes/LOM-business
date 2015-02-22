@@ -93,7 +93,8 @@ public class BusinessFacade implements Facade {
     }
 
     public RelationType findRelationTypeById(Long id) {
-        return relationTypeService.findRelationTypeById(id);
+        RelationType relationType = relationTypeService.findRelationTypeById(id);
+        return RelationType.cloneObject(relationType);
     }
 
     public List<RelationType> listAllRelationTypes() {
@@ -126,6 +127,14 @@ public class BusinessFacade implements Facade {
 
     public void deleteRelation(Long id) {
         relationService.delete(id);
+    }
+
+    public List<Relation> findRelationsBySourceInstance(Instance source) {
+        return relationService.findRelationsBySourceInstance(source);
+    }
+
+    public List<Relation> findRelationsByRelationType(RelationType relationType) {
+        return relationService.findRelationsByRelationType(relationType);
     }
 
 }
