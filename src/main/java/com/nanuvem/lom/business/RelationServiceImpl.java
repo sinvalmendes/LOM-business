@@ -41,15 +41,31 @@ public class RelationServiceImpl {
         if (targetInstance == null) {
             throw new MetadataException("Invalid argument: The target instance is mandatory!");
         }
-        if (relation.getRelationType().getTargetCardinality() == Cardinality.ONE) {
+        RelationType relationType = relation.getRelationType();
+        if (relationType.getTargetCardinality() == Cardinality.ONE) {
             List<Relation> sourceInstanceRelations = this.findRelationsBySourceInstance(sourceInstance);
             if (sourceInstanceRelations.size() != 0) {
                 throw new MetadataException(
                         "Invalid argument, the target cardinality is ONE, the target instance cannot be associated to the source instance!");
             }
         }
+        if (relationType.getSourceCardinality() == Cardinality.ONE
+                && relationType.getTargetCardinality() == Cardinality.MANY) {
+            List<Relation> targetInstanceRelations = this.findRelationsByTargetInstance(targetInstance);
+            for (Relation targetRelation : targetInstanceRelations) {
+                if (targetRelation.getRelationType().equals(relationType))
+                    throw new MetadataException(
+                            "Invalid argument, the source cardinality is ONE, the target instance cannot be associated to the source instance!");
+            }
+        }
+        
+        
         Relation createdRelation = dao.create(relation);
         return createdRelation;
+    }
+
+    private List<Relation> findRelationsByTargetInstance(Instance targetInstance) {
+        return dao.findRelationsByTargetInstance(targetInstance);
     }
 
     public Relation findRelationById(Long id) {
@@ -113,6 +129,10 @@ class RelationDaoDecorator implements RelationDao {
 
     public List<Relation> findRelationsByRelationType(RelationType relationType) {
         return this.relationDao.findRelationsByRelationType(relationType);
+    }
+
+    public List<Relation> findRelationsByTargetInstance(Instance targetInstance) {
+        return this.relationDao.findRelationsByTargetInstance(targetInstance);
     }
 
 }

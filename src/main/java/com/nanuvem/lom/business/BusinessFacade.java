@@ -89,7 +89,8 @@ public class BusinessFacade implements Facade {
     }
 
     public RelationType create(RelationType relationType) {
-        return relationTypeService.create(relationType);
+        relationType =  relationTypeService.create(relationType);
+        return RelationType.cloneObject(relationType);
     }
 
     public RelationType findRelationTypeById(Long id) {

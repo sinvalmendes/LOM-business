@@ -1,9 +1,12 @@
 package com.nanuvem.lom.business;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.nanuvem.lom.api.Cardinality;
 import com.nanuvem.lom.api.Entity;
+import com.nanuvem.lom.api.Instance;
 import com.nanuvem.lom.api.MetadataException;
 import com.nanuvem.lom.api.Relation;
 import com.nanuvem.lom.api.RelationType;
@@ -77,8 +80,36 @@ public class RelationTypeServiceImpl {
                 for (Relation relation : oldRelationTypeRelations) {
                     relationService.delete(relation.getId());
                 }
+            } else if (oldRelationType.getTargetCardinality() == Cardinality.MANY
+                    && relationType.getTargetCardinality() == Cardinality.MANY) {
+                List<Relation> oldRelationTypeRelations = this.relationService
+                        .findRelationsByRelationType(oldRelationType);
+                Map<Instance, Instance> targetSourcePairMap = new HashMap<Instance, Instance>();
+                for (Relation relation : oldRelationTypeRelations) {
+                    if (targetSourcePairMap.containsKey(relation.getTarget())) {
+                        relationService.delete(relation.getId());
+                    } else {
+                        targetSourcePairMap.put(relation.getTarget(), relation.getSource());
+                    }
+                }
+            }
+        } else if (oldRelationType.getSourceCardinality() == Cardinality.ONE
+                && relationType.getSourceCardinality() == Cardinality.ONE) {
+            if (oldRelationType.getTargetCardinality() == Cardinality.MANY
+                    && relationType.getTargetCardinality() == Cardinality.ONE) {
+                List<Relation> oldRelationTypeRelations = this.relationService
+                        .findRelationsByRelationType(oldRelationType);
+                Map<Instance, Instance> sourceTargetPairMap = new HashMap<Instance, Instance>();
+                for (Relation relation : oldRelationTypeRelations) {
+                    if (sourceTargetPairMap.containsKey(relation.getSource())) {
+                        relationService.delete(relation.getId());
+                    } else {
+                        sourceTargetPairMap.put(relation.getSource(), relation.getTarget());
+                    }
+                }
             }
         }
+
     }
 
     private boolean validateRelationTypeForUpdate(RelationType relationType) {
