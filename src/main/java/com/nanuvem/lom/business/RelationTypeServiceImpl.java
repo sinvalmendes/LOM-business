@@ -70,43 +70,63 @@ public class RelationTypeServiceImpl {
 
     private void executeCardinalityChanges(RelationType relationType) {
         RelationType oldRelationType = this.findRelationTypeById(relationType.getId());
+
         if (oldRelationType.getSourceCardinality() == Cardinality.MANY
                 && relationType.getSourceCardinality() == Cardinality.ONE) {
             if (oldRelationType.getTargetCardinality() == Cardinality.MANY
                     && relationType.getTargetCardinality() == Cardinality.ONE) {
+                // updateAManyToManyRelationTypeToOneToOne
                 List<Relation> oldRelationTypeRelations = this.relationService
                         .findRelationsByRelationType(oldRelationType);
-                oldRelationTypeRelations.remove(0);
-                for (Relation relation : oldRelationTypeRelations) {
-                    relationService.delete(relation.getId());
+                if (oldRelationTypeRelations.size() > 0) {
+                    throw new MetadataException(
+                            "Invalid update: there are more than one Relation with the actual cardinality configuration!");
                 }
+                // oldRelationTypeRelations.remove(0);
+                // for (Relation relation : oldRelationTypeRelations) {
+                // relationService.delete(relation.getId());
+                // }
             } else if (oldRelationType.getTargetCardinality() == Cardinality.MANY
                     && relationType.getTargetCardinality() == Cardinality.MANY) {
+                // updateAManyToManyRelationTypeToOneToMany
                 List<Relation> oldRelationTypeRelations = this.relationService
                         .findRelationsByRelationType(oldRelationType);
-                Map<Instance, Instance> targetSourcePairMap = new HashMap<Instance, Instance>();
-                for (Relation relation : oldRelationTypeRelations) {
-                    if (targetSourcePairMap.containsKey(relation.getTarget())) {
-                        relationService.delete(relation.getId());
-                    } else {
-                        targetSourcePairMap.put(relation.getTarget(), relation.getSource());
-                    }
+                if (oldRelationTypeRelations.size() > 0) {
+                    throw new MetadataException(
+                            "Invalid update: there are more than one Relation with the actual cardinality configuration!");
                 }
+                // Map<Instance, Instance> targetSourcePairMap = new
+                // HashMap<Instance, Instance>();
+                // for (Relation relation : oldRelationTypeRelations) {
+                // if (targetSourcePairMap.containsKey(relation.getTarget())) {
+                // relationService.delete(relation.getId());
+                // } else {
+                // targetSourcePairMap.put(relation.getTarget(),
+                // relation.getSource());
+                // }
+                // }
             }
         } else if (oldRelationType.getSourceCardinality() == Cardinality.ONE
                 && relationType.getSourceCardinality() == Cardinality.ONE) {
             if (oldRelationType.getTargetCardinality() == Cardinality.MANY
                     && relationType.getTargetCardinality() == Cardinality.ONE) {
+                // updateAnOneToManyRelationTypeToOneToOne
                 List<Relation> oldRelationTypeRelations = this.relationService
                         .findRelationsByRelationType(oldRelationType);
-                Map<Instance, Instance> sourceTargetPairMap = new HashMap<Instance, Instance>();
-                for (Relation relation : oldRelationTypeRelations) {
-                    if (sourceTargetPairMap.containsKey(relation.getSource())) {
-                        relationService.delete(relation.getId());
-                    } else {
-                        sourceTargetPairMap.put(relation.getSource(), relation.getTarget());
-                    }
+                if (oldRelationTypeRelations.size() > 0) {
+                    throw new MetadataException(
+                            "Invalid update: there are more than one Relation with the actual cardinality configuration!");
                 }
+                // Map<Instance, Instance> sourceTargetPairMap = new
+                // HashMap<Instance, Instance>();
+                // for (Relation relation : oldRelationTypeRelations) {
+                // if (sourceTargetPairMap.containsKey(relation.getSource())) {
+                // relationService.delete(relation.getId());
+                // } else {
+                // sourceTargetPairMap.put(relation.getSource(),
+                // relation.getTarget());
+                // }
+                // }
             }
         }
 
