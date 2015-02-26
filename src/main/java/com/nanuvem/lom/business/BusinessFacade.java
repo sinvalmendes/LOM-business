@@ -130,8 +130,8 @@ public class BusinessFacade implements Facade {
         relationService.delete(id);
     }
 
-    public List<Relation> findRelationsBySourceInstance(Instance source) {
-        return relationService.findRelationsBySourceInstance(source);
+    public List<Relation> findRelationsBySourceInstance(Instance source, RelationType relationType) {
+        return relationService.findRelationsBySourceInstance(source, relationType);
     }
 
     public List<Relation> findRelationsByRelationType(RelationType relationType) {

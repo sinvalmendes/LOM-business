@@ -27,6 +27,9 @@ public class RelationServiceImpl {
     }
 
     public Relation create(Relation relation) {
+        if(relation.getRelationType() == null){
+            throw new MetadataException("Invalid argument: The relation type is mandatory!");
+        }
         if (relation.getSource() == null || relation.getSource().getId() == null) {
             throw new MetadataException("Invalid argument: The source instance is mandatory!");
         }
@@ -43,7 +46,7 @@ public class RelationServiceImpl {
         }
         RelationType relationType = relation.getRelationType();
         if (relationType.getTargetCardinality() == Cardinality.ONE) {
-            List<Relation> sourceInstanceRelations = this.findRelationsBySourceInstance(sourceInstance);
+            List<Relation> sourceInstanceRelations = this.findRelationsBySourceInstance(sourceInstance, relationType);
             if (sourceInstanceRelations.size() != 0) {
                 throw new MetadataException(
                         "Invalid argument, the target cardinality is ONE, the target instance cannot be associated to the source instance!");
@@ -85,8 +88,8 @@ public class RelationServiceImpl {
         dao.delete(id);
     }
 
-    public List<Relation> findRelationsBySourceInstance(Instance source) {
-        return dao.findRelationsBySourceInstance(source);
+    public List<Relation> findRelationsBySourceInstance(Instance source, RelationType relationType) {
+        return dao.findRelationsBySourceInstance(source, relationType);
     }
 
     public List<Relation> findRelationsByRelationType(RelationType relationType) {
@@ -123,8 +126,8 @@ class RelationDaoDecorator implements RelationDao {
         this.relationDao.delete(id);
     }
 
-    public List<Relation> findRelationsBySourceInstance(Instance source) {
-        return this.relationDao.findRelationsBySourceInstance(source);
+    public List<Relation> findRelationsBySourceInstance(Instance source, RelationType relationType) {
+        return this.relationDao.findRelationsBySourceInstance(source, relationType);
     }
 
     public List<Relation> findRelationsByRelationType(RelationType relationType) {
